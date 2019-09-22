@@ -15,12 +15,12 @@ chmod +664 /etc/systemd/system/simple_clamav_notifier.service
 systemctl daemon-reload
 ```
 Now start and enable the service so it is executed on boot:
-```
+```BASH
 systemctl start simple_clamav_notifier.service
 systemctl enable simple_clamav_notifier.service
 ```
 **_Optional:_** Enable quarentine by uncommenting this code segment on script and change the quarentine target directory
-```
+```BASH
 # Uncommend to send to quarantine
 if [ -n "virus_file" ]; then
   mv virus_file /path/to/quarantine/
