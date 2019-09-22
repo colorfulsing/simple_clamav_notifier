@@ -1,0 +1,12 @@
+[Unit]
+Description=Simple alert script for clamav
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1  
+User=root
+ExecStart=/bin/bash /opt/simple_clamav_notifier/simple_clamav_notifier.sh
+
+[Install]
+WantedBy=multi-user.target
