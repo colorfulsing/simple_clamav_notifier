@@ -9,7 +9,7 @@ Open terminal and move to this project directory, then as `root` execute the fol
 mkdir -p /opt/simple_clamav_notifier
 cp simple_clamav_notifier.sh /opt/simple_clamav_notifier/simple_clamav_notifier.sh
 chmod +744 /opt/simple_clamav_notifier/simple_clamav_notifier.sh
-cp alert_detection.service /etc/systemd/system/simple_clamav_notifier.service
+cp simple_clamav_notifier.service /etc/systemd/system/simple_clamav_notifier.service
 chmod +664 /etc/systemd/system/simple_clamav_notifier.service
 # Reload systemctl configuration
 systemctl daemon-reload
