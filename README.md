@@ -19,13 +19,14 @@ Now start and enable the service so it is executed on boot:
 systemctl start simple_clamav_notifier.service
 systemctl enable simple_clamav_notifier.service
 ```
-**_Optional:_** Enable quarentine by uncommenting this code segment on script and change the quarentine target directory
+**_Optional:_** Enable quarentine by changing the following on `simple_clamav_notifier.sh` script to your needs:
 ```BASH
-# Uncommend to send to quarantine
-if [ -n "virus_file" ]; then
-  mv virus_file /path/to/quarantine/
-  echo "Found and quarantined virus file: virus_file" >> /var/log/clamav/clamd.log
-fi
+# Enable quarentine feature
+quarentine_enabled=1
+# Quarentine directory to store found virus files
+quarentine_dir="/quarentine"
+# Log file path
+log_file="/var/log/clamav/simple_clamav_notifier.log"
 ```
 
 **Note:** This script was created using notification script created by `bibikitrinke` (https://bugzilla.clamav.net/show_bug.cgi?id=12152#c7) as a base.
