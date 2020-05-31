@@ -6,13 +6,19 @@ Simple alert script and service for clamav.
 
 Open terminal and move to this project directory, then as `root` execute the following:
 ```BASH
+# Create opt directory
 mkdir -p /opt/simple_clamav_notifier
+
+# Copy both daemon and detected scripts into opt directory, and allow execution
 cp simple_clamav_notifier.sh /opt/simple_clamav_notifier/simple_clamav_notifier.sh
 chmod +744 /opt/simple_clamav_notifier/simple_clamav_notifier.sh
 cp detected.sh /opt/simple_clamav_notifier/detected.sh
 chmod +744 /opt/simple_clamav_notifier/detected.sh
+
+# Copy service file into systemd
 cp simple_clamav_notifier.service /etc/systemd/system/simple_clamav_notifier.service
 chmod +664 /etc/systemd/system/simple_clamav_notifier.service
+
 # Reload systemctl configuration
 systemctl daemon-reload
 ```
@@ -25,10 +31,13 @@ systemctl enable simple_clamav_notifier.service
 ```BASH
 # Enable quarentine feature
 quarentine_enabled=1
+
 # Quarentine directory to store found virus files
 quarentine_dir="/quarentine"
+
 # Log file path
 log_file="/var/log/clamav/simple_clamav_notifier.log"
+
 # Detected script path
 detected_file="/opt/simple_clamav_notifier/detected.sh"
 ```
