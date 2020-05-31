@@ -5,9 +5,10 @@ last_line_timeout=0
 timeout_runtime="2 seconds"
 # Quarentine support, enabled = 1, disabled = 0
 # Default = 0
-quarentine_enabled=0
+quarentine_enabled=1
 quarentine_dir="/quarentine"
 log_file="/var/log/clamav/simple_clamav_notifier.log"
+detected_file="/opt/simple_clamav_notifier/detected.sh"
 
 # Create quarentine directory if don't exists
 if [ "$quarentine_enabled" == "1" ] && [ ! -d "$quarentine_dir" ]; then
@@ -24,21 +25,21 @@ while read line ; do
   fi
 
   # Check for detected viruses
-  found="$(echo "$line" | grep -oP "ScanOnAccess: \K(.*)(?=:(.*) FOUND)")"
+  found="$(echo "$line" | grep -oP "(?:ScanOnAccess:|\-\>) \K(.*)(?=:(.*) FOUND)")"
   if [ $? = 0 ]; then
     # Avoid too soon duplicate detections
-    new_line="$(echo "$line" | grep -oP "ScanOnAccess: \K(.*)(?:(.*) FOUND)")"
+    new_line="$(echo "$line" | grep -oP "(?:ScanOnAccess:|\-\>) \K(.*)(?:(.*) FOUND)")"
     if [ "$last_line" != "$new_line" ]; then
       # Save last detection to avoid duplicates and set anti-duplicate timeout
       last_line="$new_line"
       last_line_timeout=$(date -ud "$timeout_runtime" +%s)
       
       # Alert detection
-      virus_file="$(echo "$line" | grep -oP "ScanOnAccess: \K(.*)(?=:(.*) FOUND)")"
-      virus_name="$(echo "$line" | grep -oP "ScanOnAccess: .*?: \K(.*)(?= FOUND)")"
+      virus_file="$(echo "$line" | grep -oP "(?:ScanOnAccess:|\-\>) \K(.*)(?=:(.*) FOUND)")"
+      virus_name="$(echo "$line" | grep -oP "(?:ScanOnAccess:|\-\>) .*?: \K(.*)(?= FOUND)")"
       file_in_quarentine="$(if [ "$quarentine_enabled" == "1" ] && [[ "$virus_file" == "${quarentine_dir}/"* ]]; then echo "1"; else echo "0"; fi)"
       if [ "$quarentine_enabled" != "1" ] || [ "$file_in_quarentine" != "1" ]; then
-        env CLAM_VIRUSEVENT_VIRUSNAME="$virus_name" CLAM_VIRUSEVENT_FILENAME="$virus_file" /etc/clamav/detected.sh
+        env CLAM_VIRUSEVENT_VIRUSNAME="$virus_name" CLAM_VIRUSEVENT_FILENAME="$virus_file" "${detected_file}"
       fi
       
       # Uncomment to send to quarantine
